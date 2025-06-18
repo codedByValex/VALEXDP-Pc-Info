@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>VALEXSysInfo - Anasayfa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Hoşgeldin, {{ username }}!</h1>
+
+    <h2>💻 Sistem Bilgileri</h2>
+    <ul>
+        <li>İşletim Sistemi: {{ info.os }} {{ info.os_version }}</li>
+        <li>İşlemci: {{ info.cpu }}</li>
+        <li>Çekirdek Sayısı: {{ info.cores }}</li>
+        <li>Thread Sayısı: {{ info.threads }}</li>
+        <li>Toplam RAM: {{ info.ram }} GB</li>
+        <li>Toplam Disk Alanı: {{ info.disk }} GB</li>
+    </ul>
+
+    <a href="{{ url_for('rapor_olustur') }}" class="pdf-button">📄 PDF Raporu İndir</a>
+
+    <h2>Canlı Kullanım</h2>
+    <div id="live-usage">
+        CPU: <span id="cpu">0%</span> | RAM: <span id="ram">0%</span>
+    </div>
+
+    <script>
+    function updateUsage(){
+        fetch('/usage')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('cpu').innerText = data.cpu + '%';
+            document.getElementById('ram').innerText = data.ram + '%';
+        });
+    }
+    setInterval(updateUsage, 2000);
+    updateUsage();
+    </script>
+</body>
+</html>

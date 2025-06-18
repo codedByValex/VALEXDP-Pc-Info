@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kayıt Ol - VALEXSysInfo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <style>
+    /* Stil burada ya da style.css'de olabilir */
+    body, html {
+      margin: 0; padding: 0; height: 100%; overflow: hidden;
+      background: #121212;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #eee;
+      position: relative;
+    }
+    canvas#background-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      background: #121212;
+      display: block;
+    }
+    .form-wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 400px;
+      margin: 60px auto;
+      background: rgba(20, 20, 20, 0.85);
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 123, 255, 0.5);
+    }
+    .form-wrapper h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-weight: 700;
+      color: #00aaff;
+      text-shadow: 0 0 10px #00aaff;
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: #a0cfff;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 8px;
+      background-color: #222;
+      color: #eee;
+      font-size: 16px;
+      box-shadow: inset 0 0 8px #004466;
+      transition: box-shadow 0.3s ease;
+    }
+    input[type="text"]:focus, input[type="password"]:focus {
+      outline: none;
+      box-shadow: 0 0 8px #00aaff;
+      background-color: #111;
+    }
+    .btn {
+      width: 100%;
+      padding: 14px 0;
+      background: linear-gradient(45deg, #00aaff, #004466);
+      border: none;
+      border-radius: 10px;
+      color: #eee;
+      font-weight: 700;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px #00aaff;
+      transition: background 0.3s ease;
+    }
+    .btn:hover {
+      background: linear-gradient(45deg, #004466, #00aaff);
+      box-shadow: 0 6px 15px #00ccff;
+    }
+    .form-wrapper p {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #88bfff;
+    }
+    .form-wrapper p a {
+      color: #00aaff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    .form-wrapper p a:hover {
+      color: #00ccff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="background-canvas"></canvas>
+
+  <div class="form-wrapper">
+    <h2>Kayıt Ol</h2>
+    <form method="POST" class="form-container">
+      <label for="username">Kullanıcı Adı:</label>
+      <input type="text" id="username" name="username" required placeholder="Kullanıcı adınızı girin" />
+
+      <label for="password">Şifre:</label>
+      <input type="password" id="password" name="password" required placeholder="Şifrenizi girin" />
+
+      <button type="submit" class="btn">Kayıt Ol</button>
+    </form>
+    <p>Zaten üyeyim? <a href="{{ url_for('login') }}">Giriş Yap</a></p>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('background-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.radius = 1 + Math.random() * 2;
+        this.speedX = (Math.random() - 0.5) * 0.5;
+        this.speedY = (Math.random() - 0.5) * 0.5;
+        this.opacity = 0.2 + Math.random() * 0.3;
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        if(this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
+          this.reset();
+          if(this.x < 0) this.x = 0;
+          if(this.x > width) this.x = width;
+          if(this.y < 0) this.y = 0;
+          if(this.y > height) this.y = height;
+        }
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 170, 255, ${this.opacity})`;
+        ctx.fill();
+      }
+    }
+
+    function connectParticles() {
+      for(let i = 0; i < particles.length; i++) {
+        for(let j = i + 1; j < particles.length; j++) {
+          let dx = particles[i].x - particles[j].x;
+          let dy = particles[i].y - particles[j].y;
+          let dist = Math.sqrt(dx * dx + dy * dy);
+          if(dist < 120) {
+            ctx.strokeStyle = `rgba(0, 170, 255, ${0.2 * (1 - dist/120)})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+
+    function init() {
+      resize();
+      particles = [];
+      for(let i = 0; i < 80; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      connectParticles();
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', () => {
+      init();
+    });
+
+    init();
+    animate();
+  </script>
+</body>
+</html>

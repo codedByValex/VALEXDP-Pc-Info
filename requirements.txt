@@ -1,0 +1,6 @@
+flask
+psutil
+py-cpuinfo
+matplotlib
+reportlab
+bcrypt

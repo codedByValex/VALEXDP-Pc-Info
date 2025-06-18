@@ -1,0 +1,53 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    background: #121212;
+    color: #ffffff;
+}
+h1 {
+    color: #00ffcc;
+}
+ul {
+    list-style: none;
+    padding: 0;
+}
+li {
+    background: #1e1e1e;
+    padding: 10px;
+    margin: 10px 0;
+    border-left: 5px solid #00ffcc;
+
+}
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+    background-color: #0f0f0f;
+    color: white;
+}
+canvas {
+    background: #1e1e1e;
+    border: 1px solid #555;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.pdf-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #222;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 20px;
+    transition: 0.3s;
+}
+.pdf-button:hover {
+    background-color: #555;
+}
+
+
+
+
