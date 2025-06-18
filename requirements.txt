@@ -4,3 +4,4 @@ py-cpuinfo
 matplotlib
 reportlab
 bcrypt
+gunicorn
